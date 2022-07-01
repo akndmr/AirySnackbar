@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="AirySnackbarTypes">
+        <attr name="type_success" format="boolean" />
+        <attr name="type_error" format="boolean" />
+        <attr name="type_warning" format="boolean" />
+        <attr name="type_info" format="boolean" />
+        <attr name="type_default" format="boolean" />
+    </declare-styleable>
+</resources>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="cloudy">#ecf0f1</color>
+    <color name="bloody">#e74c3c</color>
+    <color name="carrot">#e67e22</color>
+    <color name="greeny">#2ecc71</color>
+    <color name="ocean">#3498db</color>
+    <color name="midnight">#2c3e50</color>
+    <color name="white">#ffffff</color>
+</resources>

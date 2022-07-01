@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:drawable="@color/ocean" app:type_info="true" />
+    <item android:drawable="@color/greeny" app:type_success="true" />
+    <item android:drawable="@color/carrot" app:type_warning="true" />
+    <item android:drawable="@color/bloody" app:type_error="true" />
+    <item android:drawable="@color/cloudy" />
+</selector>
