@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="sample_margin_small">16dp</dimen>
+    <dimen name="sample_margin_medium">32dp</dimen>
+    <dimen name="sample_margin_large">64dp</dimen>
+</resources>

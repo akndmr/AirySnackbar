@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import com.akndmr.library.extensions.findSuitableParent
@@ -74,6 +75,7 @@ class AirySnackbar(
             }
         }
 
+        @SuppressWarnings()
         fun make(
             view: View,
             type: AirySnackbarType,
@@ -91,8 +93,9 @@ class AirySnackbar(
 
             with(snackBarView) {
                 val params = layoutParams as FrameLayout.LayoutParams
-                params.gravity = Gravity.CENTER_HORIZONTAL
+                params.gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL
                 layoutParams = params
+                orientation = LinearLayout.HORIZONTAL
 
                 setSnackBarType(type)
 
@@ -116,6 +119,31 @@ class AirySnackbar(
                             setIconColor(
                                 iconTint = attr.iconTint, forceTintColor = attr.forceTintColor
                             )
+                        }
+                        is SizeAttribute.Padding -> {
+                            val leftPadding = attr.left.takeIf {
+                                it > 0
+                            } ?: paddingLeft
+                            val rightPadding = attr.right.takeIf {
+                                it > 0
+                            } ?: paddingRight
+                            val topPadding = attr.top.takeIf {
+                                it > 0
+                            } ?: paddingTop
+                            val bottomPadding = attr.bottom.takeIf {
+                                it > 0
+                            } ?: paddingBottom
+
+                            setPadding(leftPadding, topPadding, rightPadding, bottomPadding)
+                        }
+                        is SizeAttribute.Margin -> {
+                            val params = (layoutParams as FrameLayout.LayoutParams).apply {
+                                leftMargin = attr.left
+                                topMargin = attr.top
+                                rightMargin = attr.right
+                                bottomMargin = attr.bottom
+                            }
+                            layoutParams = params
                         }
                     }
                 }

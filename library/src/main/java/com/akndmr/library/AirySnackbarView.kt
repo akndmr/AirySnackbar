@@ -9,9 +9,9 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewOutlineProvider
+import android.widget.LinearLayout
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.ImageViewCompat
@@ -24,14 +24,19 @@ class AirySnackbarView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : ConstraintLayout(context, attrs, defStyleAttr), ContentViewCallback {
+) : LinearLayout(context, attrs, defStyleAttr), ContentViewCallback {
 
 
-    private val binding = ItemAirySnackbarBinding.inflate(LayoutInflater.from(context),this, true)
+    private var binding: ItemAirySnackbarBinding
 
     private var snackBarType: AirySnackbarType = Type.Default
 
     private var roundPercent = FULL_ROUNDED
+
+    private val defaultVerticalPadding =
+        context.resources.getDimensionPixelSize(R.dimen.padding_small)
+    private val defaultHorizontalPadding =
+        context.resources.getDimensionPixelSize(R.dimen.padding_medium)
 
     private var forceIconTint = false
     private var forceTextColor = false
@@ -40,6 +45,8 @@ class AirySnackbarView @JvmOverloads constructor(
     private var viewOutlineProvider: ViewOutlineProvider? = null
 
     init {
+        binding = ItemAirySnackbarBinding.inflate(LayoutInflater.from(context), this, true)
+
         if (background == null) {
             setBackgroundResource(R.drawable.selector_snackbar_type)
         }
@@ -50,7 +57,7 @@ class AirySnackbarView @JvmOverloads constructor(
     }
 
     override fun onCreateDrawableState(extraSpace: Int): IntArray? {
-        val drawableState = super.onCreateDrawableState(extraSpace + 9)
+        val drawableState = super.onCreateDrawableState(extraSpace + 5)
         mergeDrawableStates(drawableState, getTypeAttr())
         return drawableState
     }
@@ -113,10 +120,12 @@ class AirySnackbarView @JvmOverloads constructor(
 
     fun setSnackBarType(type: AirySnackbarType) {
         snackBarType = type
-        when(type) {
-            Type.Custom -> {
+        when (type) {
+            is Type.Custom -> {
                 val bgColor = ContextCompat.getColor(context, type.bgColor)
+                backgroundTintList = ColorStateList.valueOf(bgColor)
             }
+            else -> {}
         }
 
         /*if (type == AirySnackbarType.TYPE_INFO) {
@@ -135,7 +144,7 @@ class AirySnackbarView @JvmOverloads constructor(
     }
 
     private fun setRoundPercent(round: Float = FULL_ROUNDED) {
-        val change = roundPercent != round
+        val isChanged = roundPercent != round
         roundPercent = round
         if (roundPercent != NOT_ROUNDED) {
             if (path == null) {
@@ -165,7 +174,7 @@ class AirySnackbarView @JvmOverloads constructor(
         } else {
             clipToOutline = false
         }
-        if (change) {
+        if (isChanged) {
             invalidateOutline()
         }
     }

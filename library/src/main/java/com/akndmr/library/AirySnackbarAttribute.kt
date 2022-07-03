@@ -21,3 +21,19 @@ sealed class TextAttribute : AirySnackAttribute {
         val forceTextColor: Boolean = false
     ) : TextAttribute()
 }
+
+sealed class SizeAttribute : AirySnackAttribute {
+    data class Margin(
+        val left: Int = 0,
+        val top: Int = 0,
+        val right: Int = 0,
+        val bottom: Int = 0
+    ) : SizeAttribute()
+
+    data class Padding(
+        val left: Int = 0,
+        val top: Int = 0,
+        val right: Int = 0,
+        val bottom: Int = 0
+    ) : SizeAttribute()
+}

@@ -6,40 +6,33 @@
     <merge
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="16dp"
         tools:background="@color/midnight"
-        tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+        tools:parentTag="android.widget.LinearLayout">
 
-        <LinearLayout
+        <ImageView
+            android:id="@+id/image_view_icon"
+            android:layout_width="@dimen/size_medium"
+            android:layout_height="@dimen/size_medium"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_info"
+            app:tint="@color/white" />
+
+        <TextView
+            android:id="@+id/text_view_message"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_small"
             android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingHorizontal="16dp">
-
-            <ImageView
-                android:id="@+id/image_view_icon"
-                android:layout_width="@dimen/size_medium"
-                android:layout_height="@dimen/size_medium"
-                android:src="@drawable/ic_info"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/white" />
-
-            <TextView
-                android:id="@+id/text_view_message"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_small"
-                android:textColor="@color/white"
-                app:layout_constraintBottom_toBottomOf="@id/image_view_icon"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0"
-                app:layout_constraintStart_toEndOf="@+id/image_view_icon"
-                app:layout_constraintTop_toTopOf="@id/image_view_icon"
-                tools:text="Airy Snackbar message" />
-
-        </LinearLayout>
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="@id/image_view_icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@+id/image_view_icon"
+            app:layout_constraintTop_toTopOf="@id/image_view_icon"
+            tools:text="Airy Snackbar message" />
 
     </merge>
 
