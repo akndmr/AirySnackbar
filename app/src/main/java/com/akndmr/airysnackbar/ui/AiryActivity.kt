@@ -4,10 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.akndmr.airysnackbar.R
 import com.akndmr.airysnackbar.databinding.ActivityAiryBinding
-import com.akndmr.library.AirySnackbar
-import com.akndmr.library.SizeAttribute
-import com.akndmr.library.TextAttribute
-import com.akndmr.library.Type
+import com.akndmr.library.*
 
 class AiryActivity : AppCompatActivity() {
 
@@ -38,7 +35,8 @@ class AiryActivity : AppCompatActivity() {
                 AirySnackbar.make(
                     activity = this@AiryActivity, type = Type.Error, attributes =
                     listOf(
-                        TextAttribute.Text(text = "Error AirySnackbar")
+                        TextAttribute.Text(text = "Error AirySnackbar"),
+                        IconAttribute.Icon(iconRes = R.drawable.ic_error)
                     )
                 )?.show()
             }
@@ -46,7 +44,8 @@ class AiryActivity : AppCompatActivity() {
                 AirySnackbar.make(
                     activity = this@AiryActivity, type = Type.Warning, attributes =
                     listOf(
-                        TextAttribute.Text(text = "Warning AirySnackbar")
+                        TextAttribute.Text(text = "Warning AirySnackbar"),
+                        IconAttribute.Icon(iconRes = R.drawable.ic_warning)
                     )
                 )?.show()
             }
@@ -54,7 +53,8 @@ class AiryActivity : AppCompatActivity() {
                 AirySnackbar.make(
                     activity = this@AiryActivity, type = Type.Info, attributes =
                     listOf(
-                        TextAttribute.Text(text = "Info AirySnackbar"),
+                        TextAttribute.Text(text = "Info AirySnackbar with top margin"),
+                        IconAttribute.NoIcon,
                         SizeAttribute.Margin(top = resources.getDimensionPixelSize(R.dimen.sample_margin_small))
                     )
                 )?.show()
