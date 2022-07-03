@@ -55,7 +55,7 @@ class AiryActivity : AppCompatActivity() {
                     activity = this@AiryActivity, type = Type.Info, attributes =
                     listOf(
                         TextAttribute.Text(text = "Info AirySnackbar"),
-                        SizeAttribute.Margin(top = resources.getDimensionPixelSize(R.dimen.sample_margin_medium))
+                        SizeAttribute.Margin(top = resources.getDimensionPixelSize(R.dimen.sample_margin_small))
                     )
                 )?.show()
             }
