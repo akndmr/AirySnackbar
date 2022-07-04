@@ -41,19 +41,6 @@
             app:layout_constraintTop_toBottomOf="@+id/button_success" />
 
         <Button
-            android:id="@+id/button_info"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/sample_margin_large"
-            android:backgroundTint="@color/ocean"
-            android:text="@string/info"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/button_warning" />
-
-        <Button
             android:id="@+id/button_warning"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -65,6 +52,33 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/button_error" />
+
+        <Button
+            android:id="@+id/button_info"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/sample_margin_large"
+            android:backgroundTint="@color/ocean"
+            android:text="@string/info"
+            app:layout_constraintBottom_toTopOf="@+id/button_custom"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/button_warning" />
+
+        <Button
+            android:id="@+id/button_custom"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/sample_margin_large"
+            android:backgroundTint="@color/cloudy"
+            android:textColor="@color/midnight"
+            android:text="@string/custom"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/button_info" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

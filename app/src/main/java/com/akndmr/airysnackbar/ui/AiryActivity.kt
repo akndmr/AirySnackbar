@@ -59,6 +59,17 @@ class AiryActivity : AppCompatActivity() {
                     )
                 )?.show()
             }
+            buttonCustom.setOnClickListener {
+                AirySnackbar.make(
+                    activity = this@AiryActivity, type = Type.Custom(bgColor = R.color.magenta), attributes =
+                    listOf(
+                        TextAttribute.Text(text = "Custom colored AirySnackbar"),
+                        TextAttribute.TextColor(textColor = R.color.bara_red),
+                        IconAttribute.Icon(iconRes = R.drawable.ic_custom),
+                        IconAttribute.IconColor(iconTint = R.color.teal_200)
+                    )
+                )?.show()
+            }
         }
 
     }
