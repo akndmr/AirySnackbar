@@ -2,6 +2,7 @@ package com.akndmr.library
 
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
 import android.widget.FrameLayout
@@ -30,24 +31,14 @@ class AirySnackbar(
     private var airyGravity: Int = Gravity.TOP or Gravity.CENTER_HORIZONTAL
 
     init {
+        var margins = SizeAttribute.Margin()
+
         getView().apply {
             setBackgroundColor(
                 ContextCompat.getColor(view.context, android.R.color.transparent)
             )
 
             with(model) {
-                view?.let { view ->
-                    ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
-                        val statusBar = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-                        val navigationBar =
-                            insets.getInsets(WindowInsetsCompat.Type.navigationBars())
-
-                        updateBaseMargins(statusBar.top, navigationBar.bottom)
-
-                        ViewCompat.onApplyWindowInsets(v, insets)
-                    }
-                }
-
                 snackbarLayoutAttribute.onEach { attr ->
                     when (attr) {
                         is GravityAttribute.Top -> {
@@ -65,16 +56,46 @@ class AirySnackbar(
                         is SizeAttribute.Padding -> {
                             setContentPaddings(attr)
                         }
+                        is SizeAttribute.Margin -> {
+                            margins = attr
+                        }
                     }
                 }
 
-                (layoutParams as ViewGroup.LayoutParams).apply {
-                    when (this) {
-                        is CoordinatorLayout.LayoutParams -> gravity = airyGravity
-                        is FrameLayout.LayoutParams -> gravity = airyGravity
-                    }
-                }.also { layoutParams = it }
+                view?.let { view ->
+                    applyWindowInsets(view, margins)
+                }
             }
+
+            setGravity()
+        }
+    }
+
+    private fun applyWindowInsets(view: View, margins: SizeAttribute.Margin) {
+        ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
+            val statusBar = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            val navigationBar =
+                insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+
+            updateBaseMargins(
+                left = margins.left,
+                top = statusBar.top + margins.top,
+                right = margins.right,
+                bottom = navigationBar.bottom + margins.bottom
+            )
+
+            ViewCompat.onApplyWindowInsets(v, insets)
+        }
+    }
+
+    private fun setGravity() {
+        getView().apply {
+            (layoutParams as ViewGroup.LayoutParams).apply {
+                when (this) {
+                    is CoordinatorLayout.LayoutParams -> gravity = airyGravity
+                    is FrameLayout.LayoutParams -> gravity = airyGravity
+                }
+            }.also { layoutParams = it }
         }
     }
 
@@ -97,13 +118,15 @@ class AirySnackbar(
         }
     }
 
-    private fun updateBaseMargins(top: Int, bottom: Int) {
+    private fun updateBaseMargins(left: Int = 0, top: Int = 0, right: Int = 0, bottom: Int = 0) {
         getView().apply {
-            if (layoutParams !is MarginLayoutParams) return
+            if (layoutParams !is MarginLayoutParams) return@apply
 
             (layoutParams as MarginLayoutParams).apply {
                 bottomMargin = bottom + defaultTopAndBottomMargin
                 topMargin = top + defaultTopAndBottomMargin
+                leftMargin = left
+                rightMargin = right
             }.also { layoutParams = it }
         }
     }
@@ -177,14 +200,6 @@ class AirySnackbar(
                         }
                         is RadiusAttribute.Radius -> {
                             snackBarView.setRoundPercent(attr.radius)
-                        }
-                        is SizeAttribute.Margin -> {
-                            (layoutParams as FrameLayout.LayoutParams).apply {
-                                leftMargin = attr.left
-                                topMargin = attr.top
-                                rightMargin = attr.right
-                                bottomMargin = attr.bottom
-                            }.also { layoutParams = it }
                         }
                         is AirySnackbarLayoutAttribute -> {
                             airySnackbarModel.snackbarLayoutAttribute.add(attr)

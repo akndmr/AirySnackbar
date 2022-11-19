@@ -26,8 +26,7 @@ class AiryActivity : AppCompatActivity() {
                             right = resources.getDimensionPixelSize(R.dimen.sample_margin_small)
                         ),
                         SizeAttribute.Margin(
-                            right = resources.getDimensionPixelSize(R.dimen.sample_margin_medium),
-                            left = resources.getDimensionPixelSize(R.dimen.sample_margin_medium)
+                            top = resources.getDimensionPixelSize(R.dimen.sample_margin_small)
                         ),
                         RadiusAttribute.Radius(1.0f),
                         TextAttribute.TextSize(
