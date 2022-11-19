@@ -12,4 +12,8 @@
 
     <!-- Status Bar -->
     <dimen name="min_status_bar_height">24dp</dimen>
+
+    <!-- Text Size -->
+    <dimen name="snackbar_default_text_size">14sp</dimen>
+    <dimen name="snackbar_big_text_size">18sp</dimen>
 </resources>

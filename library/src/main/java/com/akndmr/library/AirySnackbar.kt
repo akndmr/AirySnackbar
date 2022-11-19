@@ -24,23 +24,16 @@ class AirySnackbar(
             R.dimen.snackbar_top_and_bottom_margin
         )
 
-    private val defaultVerticalPadding =
-        context.resources.getDimensionPixelSize(R.dimen.padding_small)
+    private val defaultVerticalPadding: Int
+        get() = context.resources.getDimensionPixelSize(R.dimen.padding_small)
+
+    private var airyGravity: Int = Gravity.TOP or Gravity.CENTER_HORIZONTAL
 
     init {
         getView().apply {
             setBackgroundColor(
                 ContextCompat.getColor(view.context, android.R.color.transparent)
             )
-
-            (layoutParams as ViewGroup.LayoutParams).apply {
-                when (this) {
-                    is CoordinatorLayout.LayoutParams -> gravity = model.gravity
-                    is FrameLayout.LayoutParams -> gravity = model.gravity
-                }
-            }.also { layoutParams = it }
-
-            animationMode = model.animationMode
 
             with(model) {
                 view?.let { view ->
@@ -49,33 +42,62 @@ class AirySnackbar(
                         val navigationBar =
                             insets.getInsets(WindowInsetsCompat.Type.navigationBars())
 
-                        updateMargins(statusBar.top, navigationBar.bottom)
+                        updateBaseMargins(statusBar.top, navigationBar.bottom)
 
                         ViewCompat.onApplyWindowInsets(v, insets)
                     }
                 }
 
-                padding.apply {
-                    val leftPadding = left.takeIf {
-                        it > 0
-                    } ?: paddingLeft
-                    val rightPadding = right.takeIf {
-                        it > 0
-                    } ?: paddingRight
-                    val topPadding = top.takeIf {
-                        it > 0
-                    } ?: defaultVerticalPadding
-                    val bottomPadding = bottom.takeIf {
-                        it > 0
-                    } ?: defaultVerticalPadding
-
-                    setPadding(leftPadding, topPadding, rightPadding, bottomPadding)
+                snackbarLayoutAttribute.onEach { attr ->
+                    when (attr) {
+                        is GravityAttribute.Top -> {
+                            airyGravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL
+                        }
+                        is GravityAttribute.Bottom -> {
+                            airyGravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
+                        }
+                        is AnimationAttribute.FadeInOut -> {
+                            animationMode = ANIMATION_MODE_FADE
+                        }
+                        is AnimationAttribute.SlideInOut -> {
+                            animationMode = ANIMATION_MODE_SLIDE
+                        }
+                        is SizeAttribute.Padding -> {
+                            setContentPaddings(attr)
+                        }
+                    }
                 }
+
+                (layoutParams as ViewGroup.LayoutParams).apply {
+                    when (this) {
+                        is CoordinatorLayout.LayoutParams -> gravity = airyGravity
+                        is FrameLayout.LayoutParams -> gravity = airyGravity
+                    }
+                }.also { layoutParams = it }
             }
         }
     }
 
-    private fun updateMargins(top: Int, bottom: Int) {
+    private fun setContentPaddings(padding: SizeAttribute.Padding) {
+        with(content) {
+            val leftPadding = padding.left.takeIf {
+                it > 0
+            } ?: paddingLeft
+            val rightPadding = padding.right.takeIf {
+                it > 0
+            } ?: paddingRight
+            val topPadding = padding.top.takeIf {
+                it > 0
+            } ?: defaultVerticalPadding
+            val bottomPadding = padding.bottom.takeIf {
+                it > 0
+            } ?: defaultVerticalPadding
+
+            content.setPadding(leftPadding, topPadding, rightPadding, bottomPadding)
+        }
+    }
+
+    private fun updateBaseMargins(top: Int, bottom: Int) {
         getView().apply {
             if (layoutParams !is MarginLayoutParams) return
 
@@ -119,7 +141,6 @@ class AirySnackbar(
                 false
             ) as AirySnackbarView
 
-
             val airySnackbarModel: AirySnackbarModel by lazy { AirySnackbarModel() }
 
             with(snackBarView) {
@@ -140,6 +161,9 @@ class AirySnackbar(
                                 textColor = attr.textColor, forceTextColor = attr.forceTextColor
                             )
                         }
+                        is TextAttribute.TextSize -> {
+                            setTextSize(size = attr.size)
+                        }
                         is IconAttribute.NoIcon -> {
                             setIconVisibility(isVisible = false)
                         }
@@ -150,9 +174,6 @@ class AirySnackbar(
                             setIconColor(
                                 iconTint = attr.iconTint, forceTintColor = attr.forceTintColor
                             )
-                        }
-                        is SizeAttribute.Padding -> {
-                            airySnackbarModel.padding = attr
                         }
                         is RadiusAttribute.Radius -> {
                             snackBarView.setRoundPercent(attr.radius)
@@ -165,17 +186,8 @@ class AirySnackbar(
                                 bottomMargin = attr.bottom
                             }.also { layoutParams = it }
                         }
-                        is GravityAttribute.Top -> {
-                            airySnackbarModel.gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL
-                        }
-                        is GravityAttribute.Bottom -> {
-                            airySnackbarModel.gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
-                        }
-                        is AnimationAttribute.FadeInOut -> {
-                            airySnackbarModel.animationMode = ANIMATION_MODE_FADE
-                        }
-                        is AnimationAttribute.SlideInOut -> {
-                            airySnackbarModel.animationMode = ANIMATION_MODE_SLIDE
+                        is AirySnackbarLayoutAttribute -> {
+                            airySnackbarModel.snackbarLayoutAttribute.add(attr)
                         }
                     }
                 }

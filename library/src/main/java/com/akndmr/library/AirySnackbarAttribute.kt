@@ -3,8 +3,9 @@ package com.akndmr.library
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 
-
 sealed interface AirySnackbarAttribute
+
+sealed interface AirySnackbarLayoutAttribute
 
 sealed class IconAttribute : AirySnackbarAttribute {
     data class Icon(@DrawableRes val iconRes: Int) : IconAttribute()
@@ -21,18 +22,20 @@ sealed class TextAttribute : AirySnackbarAttribute {
         @ColorRes val textColor: Int,
         val forceTextColor: Boolean = false
     ) : TextAttribute()
+
+    data class TextSize(val size: Float) : TextAttribute()
 }
 
 sealed class RadiusAttribute : AirySnackbarAttribute {
     data class Radius(val radius: Float) : RadiusAttribute()
 }
 
-sealed class GravityAttribute : AirySnackbarAttribute {
+sealed class GravityAttribute : AirySnackbarAttribute, AirySnackbarLayoutAttribute {
     object Top : GravityAttribute()
     object Bottom : GravityAttribute()
 }
 
-sealed class AnimationAttribute : AirySnackbarAttribute {
+sealed class AnimationAttribute : AirySnackbarAttribute, AirySnackbarLayoutAttribute {
     object SlideInOut : AnimationAttribute()
     object FadeInOut : AnimationAttribute()
 }
@@ -50,5 +53,5 @@ sealed class SizeAttribute : AirySnackbarAttribute {
         val top: Int = 0,
         val right: Int = 0,
         val bottom: Int = 0
-    ) : SizeAttribute()
+    ) : SizeAttribute(), AirySnackbarLayoutAttribute
 }

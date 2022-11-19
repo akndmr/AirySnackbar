@@ -19,7 +19,6 @@ import com.akndmr.library.databinding.ItemAirySnackbarBinding
 import com.google.android.material.snackbar.ContentViewCallback
 import kotlin.math.min
 
-
 class AirySnackbarView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -107,6 +106,10 @@ class AirySnackbarView @JvmOverloads constructor(
         this.forceTextColor = forceTextColor
         val resolvedColor = ContextCompat.getColor(context, textColor)
         binding.textViewMessage.setTextColor(resolvedColor)
+    }
+
+    fun setTextSize(size: Float) {
+        binding.textViewMessage.textSize = size
     }
 
     fun setIconVisibility(isVisible: Boolean) {
