@@ -8,7 +8,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingHorizontal="16dp"
+        android:paddingHorizontal="@dimen/padding_medium"
         tools:background="@color/midnight"
         tools:parentTag="android.widget.LinearLayout">
 
@@ -17,6 +17,7 @@
             android:layout_width="@dimen/size_medium"
             android:layout_height="@dimen/size_medium"
             android:layout_gravity="center_vertical"
+            android:layout_marginEnd="@dimen/margin_small"
             android:src="@drawable/ic_info"
             app:tint="@color/white" />
 
@@ -24,14 +25,8 @@
             android:id="@+id/text_view_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_small"
             android:gravity="center_vertical"
             android:textColor="@color/white"
-            app:layout_constraintBottom_toBottomOf="@id/image_view_icon"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintStart_toEndOf="@+id/image_view_icon"
-            app:layout_constraintTop_toTopOf="@id/image_view_icon"
             tools:text="Airy Snackbar message" />
 
     </merge>

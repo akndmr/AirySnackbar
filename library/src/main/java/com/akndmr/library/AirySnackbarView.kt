@@ -33,11 +33,6 @@ class AirySnackbarView @JvmOverloads constructor(
 
     private var roundPercent = FULL_ROUNDED
 
-    private val defaultVerticalPadding =
-        context.resources.getDimensionPixelSize(R.dimen.padding_small)
-    private val defaultHorizontalPadding =
-        context.resources.getDimensionPixelSize(R.dimen.padding_medium)
-
     private var forceIconTint = false
     private var forceTextColor = false
     private var path: Path? = null
@@ -128,22 +123,10 @@ class AirySnackbarView @JvmOverloads constructor(
             else -> {}
         }
 
-        /*if (type == AirySnackbarType.TYPE_INFO) {
-            val darkColor = ContextCompat.getColor(context, R.color.midnight)
-            if (forceTextColor.not()) {
-                binding.textViewMessage.setTextColor(darkColor)
-            }
-            if (forceIconTint.not()) {
-                ImageViewCompat.setImageTintList(
-                    binding.imageViewIcon,
-                    ColorStateList.valueOf(darkColor)
-                )
-            }
-        }*/
         refreshDrawableState()
     }
 
-    private fun setRoundPercent(round: Float = FULL_ROUNDED) {
+    fun setRoundPercent(round: Float = HALF_ROUNDED) {
         val isChanged = roundPercent != round
         roundPercent = round
         if (roundPercent != NOT_ROUNDED) {
@@ -174,6 +157,7 @@ class AirySnackbarView @JvmOverloads constructor(
         } else {
             clipToOutline = false
         }
+
         if (isChanged) {
             invalidateOutline()
         }

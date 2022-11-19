@@ -1,88 +1,116 @@
 package com.akndmr.library
 
-import android.app.Activity
-import android.app.Dialog
 import android.view.Gravity
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.akndmr.library.extensions.findSuitableParent
 import com.google.android.material.snackbar.BaseTransientBottomBar
 
-
 class AirySnackbar(
     parent: ViewGroup,
-    content: AirySnackbarView
+    private val content: AirySnackbarView,
+    model: AirySnackbarModel
 ) : BaseTransientBottomBar<AirySnackbar>(parent, content, content) {
 
-    private val topMargin = content.resources.getDimensionPixelSize(R.dimen.snackbar_top_margin)
-    private val minStatusBarHeight =
-        content.resources.getDimensionPixelSize(R.dimen.min_status_bar_height)
-    private val topSpace = topMargin
+    private val defaultTopAndBottomMargin: Int
+        get() = content.context.resources.getDimensionPixelSize(
+            R.dimen.snackbar_top_and_bottom_margin
+        )
+
+    private val defaultVerticalPadding =
+        context.resources.getDimensionPixelSize(R.dimen.padding_small)
 
     init {
         getView().apply {
             setBackgroundColor(
                 ContextCompat.getColor(view.context, android.R.color.transparent)
             )
-            setPadding(NO_PADDING, topSpace, NO_PADDING, NO_PADDING)
 
-            val params = layoutParams as ViewGroup.LayoutParams
-            val gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL
-            when (params) {
-                is CoordinatorLayout.LayoutParams -> {
-                    params.gravity = gravity
+            (layoutParams as ViewGroup.LayoutParams).apply {
+                when (this) {
+                    is CoordinatorLayout.LayoutParams -> gravity = model.gravity
+                    is FrameLayout.LayoutParams -> gravity = model.gravity
                 }
-                is FrameLayout.LayoutParams -> {
-                    params.gravity = gravity
+            }.also { layoutParams = it }
+
+            animationMode = model.animationMode
+
+            with(model) {
+                view?.let { view ->
+                    ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
+                        val statusBar = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+                        val navigationBar =
+                            insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+
+                        updateMargins(statusBar.top, navigationBar.bottom)
+
+                        ViewCompat.onApplyWindowInsets(v, insets)
+                    }
+                }
+
+                padding.apply {
+                    val leftPadding = left.takeIf {
+                        it > 0
+                    } ?: paddingLeft
+                    val rightPadding = right.takeIf {
+                        it > 0
+                    } ?: paddingRight
+                    val topPadding = top.takeIf {
+                        it > 0
+                    } ?: defaultVerticalPadding
+                    val bottomPadding = bottom.takeIf {
+                        it > 0
+                    } ?: defaultVerticalPadding
+
+                    setPadding(leftPadding, topPadding, rightPadding, bottomPadding)
                 }
             }
-            layoutParams = params
-            animationMode = ANIMATION_MODE_FADE
+        }
+    }
+
+    private fun updateMargins(top: Int, bottom: Int) {
+        getView().apply {
+            if (layoutParams !is MarginLayoutParams) return
+
+            (layoutParams as MarginLayoutParams).apply {
+                bottomMargin = bottom + defaultTopAndBottomMargin
+                topMargin = top + defaultTopAndBottomMargin
+            }.also { layoutParams = it }
         }
     }
 
     companion object {
 
-        private const val NO_PADDING = 0
-
-        fun make(
-            activity: Activity,
-            type: AirySnackbarType,
-            attributes: List<AirySnackAttribute>
-        ): AirySnackbar? {
-            return activity.window?.decorView?.let { root ->
-                make(root, type, attributes).apply {
-                    getView().setPadding(NO_PADDING, minStatusBarHeight, NO_PADDING, NO_PADDING)
-                }
-            }
-        }
-
-        // For DialogFragments (BottomSheets, etc)
-        fun make(
-            dialog: Dialog,
-            type: AirySnackbarType,
-            attributes: List<AirySnackAttribute>
-        ): AirySnackbar? {
-            return dialog.window?.decorView?.let { root ->
-                make(root, type, attributes).apply {
-                    getView().setPadding(NO_PADDING, minStatusBarHeight, NO_PADDING, NO_PADDING)
-                }
-            }
-        }
-
         @SuppressWarnings()
         fun make(
-            view: View,
+            source: AirySnackbarSource,
             type: AirySnackbarType,
-            attributes: List<AirySnackAttribute>
+            attributes: List<AirySnackbarAttribute>
         ): AirySnackbar {
+
+            val view = when (source) {
+                is AirySnackbarSource.ActivitySource -> {
+                    source.activity.window?.decorView
+                }
+                is AirySnackbarSource.DialogSource -> {
+                    source.dialog.window?.decorView
+                }
+                is AirySnackbarSource.ViewSource -> {
+                    source.view
+                }
+            } ?: throw IllegalArgumentException(
+                "${AirySnackbar::class.java.simpleName} source view is null"
+            )
+
             val parent = view.findSuitableParent() ?: throw IllegalArgumentException(
-                "Could not find a parent view for ${AirySnackbar.javaClass.simpleName}."
+                "Could not find a parent view for ${AirySnackbar::class.java.simpleName}."
             )
 
             val snackBarView = LayoutInflater.from(view.context).inflate(
@@ -91,10 +119,13 @@ class AirySnackbar(
                 false
             ) as AirySnackbarView
 
+
+            val airySnackbarModel: AirySnackbarModel by lazy { AirySnackbarModel() }
+
             with(snackBarView) {
                 val params = layoutParams as FrameLayout.LayoutParams
                 params.gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL
-                layoutParams = params
+
                 orientation = LinearLayout.HORIZONTAL
 
                 setSnackBarType(type)
@@ -121,29 +152,30 @@ class AirySnackbar(
                             )
                         }
                         is SizeAttribute.Padding -> {
-                            val leftPadding = attr.left.takeIf {
-                                it > 0
-                            } ?: paddingLeft
-                            val rightPadding = attr.right.takeIf {
-                                it > 0
-                            } ?: paddingRight
-                            val topPadding = attr.top.takeIf {
-                                it > 0
-                            } ?: paddingTop
-                            val bottomPadding = attr.bottom.takeIf {
-                                it > 0
-                            } ?: paddingBottom
-
-                            setPadding(leftPadding, topPadding, rightPadding, bottomPadding)
+                            airySnackbarModel.padding = attr
+                        }
+                        is RadiusAttribute.Radius -> {
+                            snackBarView.setRoundPercent(attr.radius)
                         }
                         is SizeAttribute.Margin -> {
-                            val params = (layoutParams as FrameLayout.LayoutParams).apply {
+                            (layoutParams as FrameLayout.LayoutParams).apply {
                                 leftMargin = attr.left
                                 topMargin = attr.top
                                 rightMargin = attr.right
                                 bottomMargin = attr.bottom
-                            }
-                            layoutParams = params
+                            }.also { layoutParams = it }
+                        }
+                        is GravityAttribute.Top -> {
+                            airySnackbarModel.gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL
+                        }
+                        is GravityAttribute.Bottom -> {
+                            airySnackbarModel.gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
+                        }
+                        is AnimationAttribute.FadeInOut -> {
+                            airySnackbarModel.animationMode = ANIMATION_MODE_FADE
+                        }
+                        is AnimationAttribute.SlideInOut -> {
+                            airySnackbarModel.animationMode = ANIMATION_MODE_SLIDE
                         }
                     }
                 }
@@ -151,7 +183,8 @@ class AirySnackbar(
 
             return AirySnackbar(
                 parent,
-                snackBarView
+                snackBarView,
+                airySnackbarModel.apply { this.view = view }
             )
         }
     }

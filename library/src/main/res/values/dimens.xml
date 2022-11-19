@@ -8,6 +8,7 @@
     <!-- Snackbar -->
     <dimen name="snackbar_top_margin">6dp</dimen>
     <dimen name="snackbar_horizontal_margin">32dp</dimen>
+    <dimen name="snackbar_top_and_bottom_margin">28dp</dimen>
 
     <!-- Status Bar -->
     <dimen name="min_status_bar_height">24dp</dimen>
