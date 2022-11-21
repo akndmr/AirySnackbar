@@ -1,117 +1,178 @@
 package com.akndmr.airysnackbar.ui
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import com.akndmr.airysnackbar.R
 import com.akndmr.airysnackbar.databinding.ActivityAiryBinding
+import com.akndmr.airysnackbar.ui.ext.backgroundColor
+import com.akndmr.airysnackbar.ui.ext.getDimensionDip
+import com.akndmr.airysnackbar.ui.ext.px
+import com.akndmr.airysnackbar.ui.ext.setRoundPercent
 import com.akndmr.library.*
 
 class AiryActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAiryBinding
 
+    private var type: Type = Type.Success
+
+    private var attributes: MutableMap<Int, AirySnackbarAttribute> = mutableMapOf()
+
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initBinding()
 
         with(binding) {
-            buttonSuccess.setOnClickListener {
-                AirySnackbar.make(
-                    source = AirySnackbarSource.ActivitySource(this@AiryActivity),
-                    type = Type.Success,
-                    attributes = listOf(
-                        TextAttribute.Text(text = "Successful AirySnackbar sample some longer text"),
+            chipGroup.setOnCheckedStateChangeListener { _, checkedIds ->
+                var icon = R.drawable.ic_success
+                when (checkedIds.first()) {
+                    R.id.chip_success -> {
+                        type = Type.Success
+                        icon = R.drawable.ic_success
+                    }
+                    R.id.chip_info -> {
+                        type = Type.Info
+                        icon = com.akndmr.library.R.drawable.ic_info
+                    }
+                    R.id.chip_warning -> {
+                        type = Type.Warning
+                        icon = R.drawable.ic_warning2
+                    }
+                    R.id.chip_error -> {
+                        type = Type.Error
+                        icon = R.drawable.ic_error2
+                    }
+                    R.id.chip_custom -> {
+                        type = Type.Custom(bgColor = com.akndmr.library.R.color.mustardy)
+                        icon = R.drawable.ic_custom
+                    }
+                }
+                imageViewIcon.setImageResource(icon)
+                preview(attr = IconAttribute.Icon(iconRes = icon))
+            }
+
+            rangeSliderMargin.addOnChangeListener { _, value, _ ->
+                value.toInt().also { margin ->
+                    SizeAttribute.Margin(
+                        left = margin, right = margin, top = margin, bottom = margin
+                    ).also { preview(it) }
+                }
+
+                val marginDp = getDimensionDip(value).toInt()
+
+                ConstraintSet().apply {
+                    clone(binding.constraintLayoutRoot)
+                    setMargin(R.id.preview, ConstraintSet.TOP, marginDp)
+                    setMargin(R.id.preview, ConstraintSet.BOTTOM, marginDp)
+                    setMargin(R.id.preview, ConstraintSet.START, marginDp)
+                    setMargin(R.id.preview, ConstraintSet.END, marginDp)
+                    applyTo(binding.constraintLayoutRoot)
+                }
+            }
+
+            rangeSliderPadding.apply {
+                addOnChangeListener { _, value, _ ->
+                    value.px.toInt().also { padding ->
                         SizeAttribute.Padding(
-                            left = resources.getDimensionPixelSize(R.dimen.sample_margin_small),
-                            right = resources.getDimensionPixelSize(R.dimen.sample_margin_small)
-                        ),
-                        SizeAttribute.Margin(
-                            top = resources.getDimensionPixelSize(R.dimen.sample_margin_small)
-                        ),
-                        RadiusAttribute.Radius(1.0f),
-                        TextAttribute.TextSize(
-                            size = resources.getDimension(
-                                com.akndmr.library.R.dimen.snackbar_big_text_size
-                            )
-                        )
-                    )
-                ).show()
+                            left = padding, right = padding, top = padding, bottom = padding
+                        ).also { preview(it) }
+                    }
+                }
             }
 
-            buttonError.setOnClickListener {
-                AirySnackbar.make(
-                    source = AirySnackbarSource.ActivitySource(this@AiryActivity),
-                    type = Type.Error,
-                    attributes = listOf(
-                        TextAttribute.Text(text = "Error AirySnackbar"),
-                        IconAttribute.Icon(iconRes = R.drawable.ic_error),
-                        SizeAttribute.Padding(
-                            left = resources.getDimensionPixelSize(R.dimen.sample_margin_small),
-                            right = resources.getDimensionPixelSize(R.dimen.sample_margin_small)
-                        ),
-                        SizeAttribute.Margin(
-                            right = resources.getDimensionPixelSize(R.dimen.sample_margin_medium),
-                            left = resources.getDimensionPixelSize(R.dimen.sample_margin_medium)
-                        ),
-                        TextAttribute.TextSize(
-                            size = resources.getDimension(
-                                com.akndmr.library.R.dimen.snackbar_default_text_size
-                            )
-                        )
-                    )
-                ).show()
+            rangeSliderRadius.apply {
+                addOnChangeListener { _, value, _ ->
+                    value.also { radius ->
+                        RadiusAttribute.Radius(radius = radius).also { preview(it) }
+                    }
+                }
             }
 
-            buttonWarning.setOnClickListener {
-                AirySnackbar.make(
-                    source = AirySnackbarSource.ActivitySource(this@AiryActivity),
-                    type = Type.Warning,
-                    attributes = listOf(
-                        TextAttribute.Text(
-                            text = "Warning AirySnackbar Warning AirySnackbar " +
-                                    "Warning AirySnackbar Warning AirySnackbar Warning AirySnackbar"
-                        ),
-                        IconAttribute.Icon(iconRes = R.drawable.ic_warning)
-                    )
-                ).show()
+            rangeSliderTextSize.addOnChangeListener { _, value, _ ->
+                textViewMessage.textSize = value
+                TextAttribute.TextSize(size = value).also { preview(it) }
             }
 
-            buttonInfo.setOnClickListener {
+            buttonShow.setOnClickListener {
                 AirySnackbar.make(
                     source = AirySnackbarSource.ActivitySource(this@AiryActivity),
-                    type = Type.Info,
-                    attributes = listOf(
-                        TextAttribute.Text(text = "Info AirySnackbar with top margin"),
-                        IconAttribute.NoIcon,
-                        SizeAttribute.Margin(
-                            top = resources.getDimensionPixelSize(
-                                R.dimen.sample_margin_small
-                            )
-                        ),
-                        GravityAttribute.Bottom,
-                        AnimationAttribute.SlideInOut
-                    )
-                ).show()
-            }
-
-            buttonCustom.setOnClickListener {
-                AirySnackbar.make(
-                    source = AirySnackbarSource.ActivitySource(this@AiryActivity),
-                    type = Type.Custom(bgColor = R.color.cabbage),
-                    attributes = listOf(
-                        TextAttribute.Text(text = "Custom colored AirySnackbar"),
-                        TextAttribute.TextColor(textColor = R.color.lavander),
-                        IconAttribute.Icon(iconRes = R.drawable.ic_custom),
-                        IconAttribute.IconColor(iconTint = R.color.teal_200)
-                    )
+                    type = type,
+                    attributes = attributes.map { it.value }
                 ).show()
             }
         }
-
+        initPreview()
     }
 
     private fun initBinding() {
         binding = ActivityAiryBinding.inflate(layoutInflater)
         setContentView(binding.root)
+    }
+
+    private fun initPreview() {
+        with(binding) {
+            preview.setRoundPercent(.5f)
+            chipGroup.check(R.id.chip_success)
+            rangeSliderRadius.setValues(.5f)
+            rangeSliderMargin.setValues(8f)
+            rangeSliderPadding.setValues(8f)
+            rangeSliderTextSize.setValues(14f)
+            preview(
+                TextAttribute.Text(
+                    text = "Airy Snackbar message a little bit longer than what you could expect"
+                )
+            )
+        }
+    }
+
+    private fun preview(attr: AirySnackbarAttribute? = null) {
+        with(binding) {
+
+            preview.backgroundColor(type)
+
+            when (attr) {
+                is TextAttribute.Text -> {
+                    textViewMessage.text = attr.text
+                    attributes.put(0, attr)
+                }
+                is TextAttribute.TextColor -> {
+                    val resolvedColor =
+                        ContextCompat.getColor(this@AiryActivity, attr.textColor)
+                    textViewMessage.setTextColor(resolvedColor)
+                    attributes.put(1, attr)
+                }
+                is TextAttribute.TextSize -> {
+                    attributes.put(2, attr)
+                }
+                is IconAttribute.NoIcon -> {
+                    imageViewIcon.isVisible = false
+                    attributes.put(3, attr)
+                }
+                is IconAttribute.Icon -> {
+                    imageViewIcon.setImageResource(attr.iconRes)
+                    attributes.put(4, attr)
+                }
+                is IconAttribute.IconColor -> {
+                    //TODO
+                }
+                is RadiusAttribute.Radius -> {
+                    preview.setRoundPercent(attr.radius)
+                    attributes.put(5, attr)
+                }
+                is SizeAttribute.Padding -> {
+                    preview.setPadding(attr.left, attr.top, attr.right, attr.bottom)
+                    attributes.put(6, attr)
+                }
+                is SizeAttribute.Margin -> {
+                    attributes.put(7, attr)
+                }
+                else -> {}
+            }
+        }
     }
 }
