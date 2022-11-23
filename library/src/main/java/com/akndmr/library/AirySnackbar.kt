@@ -77,14 +77,33 @@ class AirySnackbar(
             val navigationBar =
                 insets.getInsets(WindowInsetsCompat.Type.navigationBars())
 
+            val factor = if (margins.unit == SizeUnit.DP) {
+                content.context.resources.displayMetrics.density
+            } else {
+                1f
+            }
+
             updateBaseMargins(
-                left = margins.left,
-                top = statusBar.top + margins.top,
-                right = margins.right,
-                bottom = navigationBar.bottom + margins.bottom
+                left = margins.left.times(factor).toInt(),
+                top = statusBar.top + margins.top.times(factor).toInt(),
+                right = margins.right.times(factor).toInt(),
+                bottom = navigationBar.bottom + margins.bottom.times(factor).toInt()
             )
 
             ViewCompat.onApplyWindowInsets(v, insets)
+        }
+    }
+
+    private fun updateBaseMargins(left: Int = 0, top: Int = 0, right: Int = 0, bottom: Int = 0) {
+        getView().apply {
+            if (layoutParams !is MarginLayoutParams) return@apply
+
+            (layoutParams as MarginLayoutParams).apply {
+                bottomMargin = bottom + defaultTopAndBottomMargin
+                topMargin = top + defaultTopAndBottomMargin
+                leftMargin = left
+                rightMargin = right
+            }.also { layoutParams = it }
         }
     }
 
@@ -100,34 +119,32 @@ class AirySnackbar(
     }
 
     private fun setContentPaddings(padding: SizeAttribute.Padding) {
-        with(content) {
-            val leftPadding = padding.left.takeIf {
-                it > 0
-            } ?: paddingLeft
-            val rightPadding = padding.right.takeIf {
-                it > 0
-            } ?: paddingRight
-            val topPadding = padding.top.takeIf {
-                it > 0
-            } ?: defaultVerticalPadding
-            val bottomPadding = padding.bottom.takeIf {
-                it > 0
-            } ?: defaultVerticalPadding
-
-            content.setPadding(leftPadding, topPadding, rightPadding, bottomPadding)
+        val factor = if (padding.unit == SizeUnit.DP) {
+            content.context.resources.displayMetrics.density
+        } else {
+            1f
         }
-    }
 
-    private fun updateBaseMargins(left: Int = 0, top: Int = 0, right: Int = 0, bottom: Int = 0) {
-        getView().apply {
-            if (layoutParams !is MarginLayoutParams) return@apply
+        with(content) {
+            val leftPadding = padding.left.times(factor).takeIf {
+                it > 0f
+            } ?: paddingLeft
+            val rightPadding = padding.right.times(factor).takeIf {
+                it > 0f
+            } ?: paddingRight
+            val topPadding = padding.top.times(factor).takeIf {
+                it > 0f
+            } ?: defaultVerticalPadding
+            val bottomPadding = padding.bottom.times(factor).takeIf {
+                it > 0f
+            } ?: defaultVerticalPadding
 
-            (layoutParams as MarginLayoutParams).apply {
-                bottomMargin = bottom + defaultTopAndBottomMargin
-                topMargin = top + defaultTopAndBottomMargin
-                leftMargin = left
-                rightMargin = right
-            }.also { layoutParams = it }
+            content.setPadding(
+                leftPadding.toInt(),
+                topPadding.toInt(),
+                rightPadding.toInt(),
+                bottomPadding.toInt()
+            )
         }
     }
 

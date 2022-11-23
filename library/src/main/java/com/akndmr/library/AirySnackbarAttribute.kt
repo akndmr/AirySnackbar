@@ -45,13 +45,20 @@ sealed class SizeAttribute : AirySnackbarAttribute, AirySnackbarLayoutAttribute 
         val left: Int = 0,
         val top: Int = 0,
         val right: Int = 0,
-        val bottom: Int = 0
+        val bottom: Int = 0,
+        val unit: SizeUnit = SizeUnit.DP
     ) : SizeAttribute()
 
     data class Padding(
         val left: Int = 0,
         val top: Int = 0,
         val right: Int = 0,
-        val bottom: Int = 0
+        val bottom: Int = 0,
+        val unit: SizeUnit = SizeUnit.DP
     ) : SizeAttribute()
+}
+
+enum class SizeUnit {
+    DP,
+    PX
 }

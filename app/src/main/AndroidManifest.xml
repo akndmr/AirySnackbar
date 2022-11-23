@@ -14,13 +14,18 @@
         android:theme="@style/Theme.AirySnackBar"
         tools:targetApi="31">
         <activity
-            android:name=".ui.AiryActivity"
+            android:name=".ui.SampleUsageActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.AiryActivity"
+            android:exported="true">
+
         </activity>
     </application>
 
