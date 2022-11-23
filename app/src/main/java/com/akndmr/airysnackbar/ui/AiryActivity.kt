@@ -1,6 +1,7 @@
 package com.akndmr.airysnackbar.ui
 
 import android.annotation.SuppressLint
+import android.content.res.ColorStateList
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
@@ -50,6 +51,7 @@ class AiryActivity : AppCompatActivity() {
                     R.id.chip_custom -> {
                         type = Type.Custom(bgColor = com.akndmr.library.R.color.mustardy)
                         icon = R.drawable.ic_custom
+                        preview(attr = IconAttribute.IconColor(com.akndmr.library.R.color.midnight))
                     }
                 }
                 imageViewIcon.setImageResource(icon)
@@ -66,18 +68,17 @@ class AiryActivity : AppCompatActivity() {
                 val marginDp = getDimensionDip(value).toInt()
 
                 ConstraintSet().apply {
-                    clone(binding.constraintLayoutRoot)
-                    setMargin(R.id.preview, ConstraintSet.TOP, marginDp)
+                    clone(previewContainer)
                     setMargin(R.id.preview, ConstraintSet.BOTTOM, marginDp)
                     setMargin(R.id.preview, ConstraintSet.START, marginDp)
                     setMargin(R.id.preview, ConstraintSet.END, marginDp)
-                    applyTo(binding.constraintLayoutRoot)
+                    applyTo(previewContainer)
                 }
             }
 
             rangeSliderPadding.apply {
                 addOnChangeListener { _, value, _ ->
-                    value.px.toInt().also { padding ->
+                    value.toInt().also { padding ->
                         SizeAttribute.Padding(
                             left = padding, right = padding, top = padding, bottom = padding
                         ).also { preview(it) }
@@ -158,14 +159,27 @@ class AiryActivity : AppCompatActivity() {
                     attributes.put(4, attr)
                 }
                 is IconAttribute.IconColor -> {
-                    //TODO
+                    imageViewIcon.imageTintList =
+                        ColorStateList.valueOf(
+                            ContextCompat.getColor(
+                                this@AiryActivity,
+                                attr.iconTint
+                            )
+                        )
+                    attributes.put(8, attr)
+
                 }
                 is RadiusAttribute.Radius -> {
                     preview.setRoundPercent(attr.radius)
                     attributes.put(5, attr)
                 }
                 is SizeAttribute.Padding -> {
-                    preview.setPadding(attr.left, attr.top, attr.right, attr.bottom)
+                    preview.setPadding(
+                        attr.left.px.toInt(),
+                        attr.top.px.toInt(),
+                        attr.right.px.toInt(),
+                        attr.bottom.px.toInt()
+                    )
                     attributes.put(6, attr)
                 }
                 is SizeAttribute.Margin -> {
