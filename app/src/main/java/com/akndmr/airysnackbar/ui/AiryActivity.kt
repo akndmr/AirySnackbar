@@ -14,6 +14,7 @@ import com.akndmr.airysnackbar.ui.ext.getDimensionDip
 import com.akndmr.airysnackbar.ui.ext.px
 import com.akndmr.airysnackbar.ui.ext.setRoundPercent
 import com.akndmr.library.*
+import com.akndmr.library.R as LibR
 
 class AiryActivity : AppCompatActivity() {
 
@@ -31,30 +32,36 @@ class AiryActivity : AppCompatActivity() {
         with(binding) {
             chipGroup.setOnCheckedStateChangeListener { _, checkedIds ->
                 var icon = R.drawable.ic_success
+                var iconColor = R.color.white
                 when (checkedIds.first()) {
                     R.id.chip_success -> {
                         type = Type.Success
                         icon = R.drawable.ic_success
+                        iconColor = R.color.white
                     }
                     R.id.chip_info -> {
                         type = Type.Info
-                        icon = com.akndmr.library.R.drawable.ic_info
+                        icon = LibR.drawable.ic_info
+                        iconColor = R.color.white
                     }
                     R.id.chip_warning -> {
                         type = Type.Warning
                         icon = R.drawable.ic_warning2
+                        iconColor = R.color.white
                     }
                     R.id.chip_error -> {
                         type = Type.Error
                         icon = R.drawable.ic_error2
+                        iconColor = R.color.white
                     }
                     R.id.chip_custom -> {
-                        type = Type.Custom(bgColor = com.akndmr.library.R.color.mustardy)
+                        type = Type.Custom(bgColor = LibR.color.mustardy)
                         icon = R.drawable.ic_custom
-                        preview(attr = IconAttribute.IconColor(com.akndmr.library.R.color.midnight))
+                        iconColor = LibR.color.midnight
                     }
                 }
                 imageViewIcon.setImageResource(icon)
+                preview(attr = IconAttribute.IconColor(iconTint = iconColor))
                 preview(attr = IconAttribute.Icon(iconRes = icon))
             }
 
@@ -167,7 +174,6 @@ class AiryActivity : AppCompatActivity() {
                             )
                         )
                     attributes.put(8, attr)
-
                 }
                 is RadiusAttribute.Radius -> {
                     preview.setRoundPercent(attr.radius)
