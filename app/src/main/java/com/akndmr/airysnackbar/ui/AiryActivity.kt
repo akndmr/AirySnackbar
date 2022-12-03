@@ -108,7 +108,7 @@ class AiryActivity : AppCompatActivity() {
 
             buttonShow.setOnClickListener {
                 AirySnackbar.make(
-                    source = AirySnackbarSource.ActivitySource(this@AiryActivity),
+                    source = AirySnackbarSource.ViewSource(view = textViewPreview),
                     type = type,
                     attributes = attributes.map { it.value }
                 ).show()
