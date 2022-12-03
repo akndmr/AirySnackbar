@@ -1,6 +1,8 @@
-# AirySnackbar
+# AirySnackbar 🪁
 
-A custom and customisable Android snackbar library.
+<img width="442" alt="airysnackbar" src="https://user-images.githubusercontent.com/15641747/205441655-cf4ecbde-18db-4b59-bc1f-cb7a1f7946a3.png">
+
+A custom and customizable Android snackbar library.
 
 ![Language](https://img.shields.io/github/languages/top/akndmr/AirySnackbar) 
 ![GitHub issues](https://img.shields.io/github/issues/akndmr/AirySnackbar)
