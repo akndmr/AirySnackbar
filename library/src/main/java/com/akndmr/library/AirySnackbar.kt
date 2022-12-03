@@ -175,6 +175,10 @@ class AirySnackbar(
                 "Could not find a parent view for ${AirySnackbar::class.java.simpleName}."
             )
 
+            (parent.layoutParams as LinearLayout.LayoutParams).apply {
+                gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL
+            }
+
             val snackBarView = LayoutInflater.from(view.context).inflate(
                 R.layout.layout_airy_snackbar,
                 parent,
@@ -220,6 +224,17 @@ class AirySnackbar(
                         }
                         is AirySnackbarLayoutAttribute -> {
                             airySnackbarModel.snackbarLayoutAttribute.add(attr)
+
+                            if (attr is SizeAttribute.Margin && source is AirySnackbarSource.ViewSource) {
+                                (layoutParams as FrameLayout.LayoutParams).apply {
+                                    leftMargin = attr.left
+                                    topMargin = attr.top
+                                    rightMargin = attr.right
+                                    bottomMargin = attr.bottom
+                                }.also { params ->
+                                    layoutParams = params
+                                }
+                            }
                         }
                     }
                 }
