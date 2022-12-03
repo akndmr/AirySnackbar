@@ -175,8 +175,8 @@ class AirySnackbar(
                 "Could not find a parent view for ${AirySnackbar::class.java.simpleName}."
             )
 
-            (parent.layoutParams as LinearLayout.LayoutParams).apply {
-                gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL
+            (parent.layoutParams as? LinearLayout.LayoutParams)?.let { params ->
+                params.gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL
             }
 
             val snackBarView = LayoutInflater.from(view.context).inflate(

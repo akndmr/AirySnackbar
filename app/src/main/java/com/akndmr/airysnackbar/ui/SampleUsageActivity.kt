@@ -78,21 +78,27 @@ class SampleUsageActivity : AppCompatActivity() {
                     listOf(
                         TextAttribute.Text(text = "Info AirySnackbar with top margin 16dp and no icon"),
                         IconAttribute.NoIcon,
-                        SizeAttribute.Margin(top = 16, unit = SizeUnit.DP)
+                        SizeAttribute.Margin(top = 16, unit = SizeUnit.DP),
+                        AnimationAttribute.SlideInOut
                     )
                 ).show()
             }
 
             buttonCustom.setOnClickListener {
                 AirySnackbar.make(
-                    source = AirySnackbarSource.ActivitySource(activity = this@SampleUsageActivity),
-                    type = Type.Custom(bgColor = R.color.cabbage),
+                    source = AirySnackbarSource.ViewSource(view = binding.buttonCustom),
+                    type = Type.Custom(bgColor = R.color.teal_700),
                     attributes =
                     listOf(
                         TextAttribute.Text(text = "Custom color bg and custom icon with tint AirySnackbar"),
-                        TextAttribute.TextColor(textColor = R.color.lavander),
+                        TextAttribute.TextColor(textColor = R.color.black),
                         IconAttribute.Icon(iconRes = R.drawable.ic_custom),
-                        IconAttribute.IconColor(iconTint = R.color.teal_200)
+                        IconAttribute.IconColor(iconTint = R.color.teal_200),
+                        SizeAttribute.Margin(left = 24, right = 24, unit = SizeUnit.DP),
+                        SizeAttribute.Padding(top = 12, bottom = 12, unit = SizeUnit.DP),
+                        RadiusAttribute.Radius(radius = 8f),
+                        GravityAttribute.Top,
+                        AnimationAttribute.FadeInOut
                     )
                 ).show()
             }
