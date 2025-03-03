@@ -236,6 +236,9 @@ class AirySnackbar(
                                 }
                             }
                         }
+                        is SoundAttribute.Custom -> playSound(attr.soundResId)
+                        is SoundAttribute.UseDefault -> playSound()
+                        is SoundAttribute.NoSound -> { /* Don't play any sound */ }
                     }
                 }
             }
