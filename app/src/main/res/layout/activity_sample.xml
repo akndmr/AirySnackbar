@@ -62,6 +62,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/button_warning" />
 
+
         <Button
             android:id="@+id/button_custom"
             android:layout_width="0dp"
@@ -70,11 +71,24 @@
             android:backgroundTint="@color/cloudy"
             android:text="@string/custom"
             android:textColor="@color/midnight"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/button_sound"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/button_info" />
+
+        <Button
+            android:id="@+id/button_sound"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/sample_margin_large"
+            android:backgroundTint="@color/mustardy"
+            android:text="@string/sound_notification"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/button_custom" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
