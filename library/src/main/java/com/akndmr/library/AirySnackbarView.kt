@@ -167,15 +167,16 @@ class AirySnackbarView @JvmOverloads constructor(
             invalidateOutline()
         }
     }
-    fun playSound(soundResId: Int? = null) {
+    fun playSound(soundResId: Int? = null, volumeLevel: VolumeLevel = VolumeLevel.of(0.15f)) {
         try {
             mediaPlayer?.release()
+
             val finalSoundResId = soundResId ?: R.raw.airy_default
-            mediaPlayer = MediaPlayer.create(context, finalSoundResId)
-            mediaPlayer?.setOnCompletionListener { player ->
-                player.release()
+            mediaPlayer = MediaPlayer.create(context, finalSoundResId).apply {
+                setVolume(volumeLevel.value, volumeLevel.value)
+                setOnCompletionListener { player -> player.release() }
+                start()
             }
-            mediaPlayer?.start()
         } catch (e: Exception) {
             e.printStackTrace()
         }

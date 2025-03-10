@@ -58,9 +58,12 @@ sealed class SizeAttribute : AirySnackbarAttribute, AirySnackbarLayoutAttribute 
     ) : SizeAttribute()
 }
 sealed class SoundAttribute : AirySnackbarAttribute {
-    data class Custom(val soundResId: Int) : SoundAttribute()
+    data class Volume(val volumeLevel: VolumeLevel) : SoundAttribute()
+    data class Custom(
+        val soundResId: Int,
+        val volumeLevel: VolumeLevel = VolumeLevel.of(0.15f)
+    ) : SoundAttribute()
     object UseDefault : SoundAttribute()
-    object NoSound : SoundAttribute()
 }
 
 enum class SizeUnit {
