@@ -5,6 +5,7 @@ import android.content.res.ColorStateList
 import android.graphics.Outline
 import android.graphics.Path
 import android.graphics.RectF
+import android.media.MediaPlayer
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -37,6 +38,7 @@ class AirySnackbarView @JvmOverloads constructor(
     private var path: Path? = null
     private var rect: RectF? = null
     private var viewOutlineProvider: ViewOutlineProvider? = null
+    private var mediaPlayer: MediaPlayer? = null
 
     init {
         binding = ItemAirySnackbarBinding.inflate(LayoutInflater.from(context), this, true)
@@ -165,7 +167,20 @@ class AirySnackbarView @JvmOverloads constructor(
             invalidateOutline()
         }
     }
+    fun playSound(soundResId: Int? = null, volumeLevel: VolumeLevel = VolumeLevel.of(0.15f)) {
+        try {
+            mediaPlayer?.release()
 
+            val finalSoundResId = soundResId ?: R.raw.airy_default
+            mediaPlayer = MediaPlayer.create(context, finalSoundResId).apply {
+                setVolume(volumeLevel.value, volumeLevel.value)
+                setOnCompletionListener { player -> player.release() }
+                start()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
     override fun animateContentIn(delay: Int, duration: Int) {}
 
     override fun animateContentOut(delay: Int, duration: Int) {}
@@ -180,5 +195,11 @@ class AirySnackbarView @JvmOverloads constructor(
         const val FULL_ROUNDED = 1f
         const val HALF_ROUNDED = .5f
         const val NOT_ROUNDED = 0f
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        mediaPlayer?.release()
+        mediaPlayer = null
     }
 }

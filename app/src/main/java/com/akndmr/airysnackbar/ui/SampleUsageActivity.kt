@@ -102,6 +102,21 @@ class SampleUsageActivity : AppCompatActivity() {
                     )
                 ).show()
             }
+            buttonSound.setOnClickListener {
+                AirySnackbar.make(
+                    source = AirySnackbarSource.ViewSource(view = binding.buttonSound),
+                    type = Type.Custom(bgColor = com.akndmr.library.R.color.mustardy),
+                    attributes =
+                    listOf(
+                        TextAttribute.Text(text = "Sound AirySnackbar with top margin 16dp and no icon"),
+                        TextAttribute.TextColor(textColor = R.color.black),
+                        IconAttribute.NoIcon,
+                        SizeAttribute.Margin(top = 16, unit = SizeUnit.DP),
+                        SoundAttribute.UseDefault
+
+                    )
+                ).show()
+            }
         }
     }
 }
