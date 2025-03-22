@@ -7,12 +7,12 @@ data class SwipeConfig(
     val minAlpha: Float = DEFAULT_MIN_ALPHA,
     val maxAlpha: Float = DEFAULT_MAX_ALPHA,
     val alphaProgressFactor: Float = DEFAULT_ALPHA_PROGRESS_FACTOR,
-    val swipeDirection: SwipeDirection = SwipeDirection.BOTH
+    val swipeDirection: SwipeDirection = SwipeDirection.Both
 ) {
     sealed class SwipeDirection {
-        object LEFT_ONLY : SwipeDirection()
-        object RIGHT_ONLY : SwipeDirection()
-        object BOTH : SwipeDirection()
+        object LeftOnly : SwipeDirection()
+        object RightOnly : SwipeDirection()
+        object Both : SwipeDirection()
     }
 
     companion object {

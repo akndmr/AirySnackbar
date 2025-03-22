@@ -74,7 +74,7 @@ sealed class SwipeAttribute : AirySnackbarAttribute, AirySnackbarLayoutAttribute
         val minAlpha: Float = SwipeConfig.DEFAULT_MIN_ALPHA,
         val maxAlpha: Float = SwipeConfig.DEFAULT_MAX_ALPHA,
         val alphaProgressFactor: Float = SwipeConfig.DEFAULT_ALPHA_PROGRESS_FACTOR,
-        val swipeDirection: SwipeConfig.SwipeDirection = SwipeConfig.SwipeDirection.BOTH
+        val swipeDirection: SwipeConfig.SwipeDirection = SwipeConfig.SwipeDirection.Both
     ) : SwipeAttribute()
 
     object Disable : SwipeAttribute()

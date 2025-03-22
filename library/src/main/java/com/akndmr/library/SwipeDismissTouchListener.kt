@@ -41,13 +41,13 @@ class SwipeDismissTouchListener(
                 if (currentState == SwipeState.Idle && distance > touchSlop) {
                     val isMovingRight = event.rawX > startX
                     when (config.swipeDirection) {
-                        is SwipeConfig.SwipeDirection.LEFT_ONLY -> {
+                        is SwipeConfig.SwipeDirection.LeftOnly -> {
                             if (!isMovingRight) currentState = SwipeState.Dragging
                         }
-                        is SwipeConfig.SwipeDirection.RIGHT_ONLY -> {
+                        is SwipeConfig.SwipeDirection.RightOnly -> {
                             if (isMovingRight) currentState = SwipeState.Dragging
                         }
-                        is SwipeConfig.SwipeDirection.BOTH -> {
+                        is SwipeConfig.SwipeDirection.Both -> {
                             currentState = SwipeState.Dragging
                         }
                     }
@@ -56,13 +56,13 @@ class SwipeDismissTouchListener(
                 if (currentState == SwipeState.Dragging) {
                     val newX = event.rawX + dX
                     val constrainedX = when (config.swipeDirection) {
-                        is SwipeConfig.SwipeDirection.LEFT_ONLY -> {
+                        is SwipeConfig.SwipeDirection.LeftOnly -> {
                             newX.coerceIn(-view.width.toFloat(), 0f)
                         }
-                        is SwipeConfig.SwipeDirection.RIGHT_ONLY -> {
+                        is SwipeConfig.SwipeDirection.RightOnly -> {
                             newX.coerceIn(0f, view.width.toFloat())
                         }
-                        is SwipeConfig.SwipeDirection.BOTH -> {
+                        is SwipeConfig.SwipeDirection.Both -> {
                             newX.coerceIn(-view.width.toFloat(), view.width.toFloat())
                         }
                     }
@@ -81,15 +81,15 @@ class SwipeDismissTouchListener(
                     if (swipeProgress >= 1f && event.action == MotionEvent.ACTION_UP) {
                         val direction = view.x > 0
                         when (config.swipeDirection) {
-                            is SwipeConfig.SwipeDirection.LEFT_ONLY -> {
+                            is SwipeConfig.SwipeDirection.LeftOnly -> {
                                 if (!direction) animateDismiss(direction)
                                 else animateReset()
                             }
-                            is SwipeConfig.SwipeDirection.RIGHT_ONLY -> {
+                            is SwipeConfig.SwipeDirection.RightOnly -> {
                                 if (direction) animateDismiss(direction)
                                 else animateReset()
                             }
-                            is SwipeConfig.SwipeDirection.BOTH -> {
+                            is SwipeConfig.SwipeDirection.Both -> {
                                 animateDismiss(direction)
                             }
                         }
