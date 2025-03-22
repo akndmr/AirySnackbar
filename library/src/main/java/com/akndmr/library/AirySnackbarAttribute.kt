@@ -2,6 +2,7 @@ package com.akndmr.library
 
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
+import com.google.android.material.snackbar.BaseTransientBottomBar
 
 sealed interface AirySnackbarAttribute
 
@@ -64,6 +65,33 @@ sealed class SoundAttribute : AirySnackbarAttribute {
         val volumeLevel: VolumeLevel = VolumeLevel.of(0.15f)
     ) : SoundAttribute()
     object UseDefault : SoundAttribute()
+}
+
+sealed class SwipeAttribute : AirySnackbarAttribute, AirySnackbarLayoutAttribute {
+    data class Enable(
+        val dismissThreshold: Float = SwipeDismissTouchListener.DEFAULT_DISMISS_THRESHOLD,
+        val animationDuration: Long = SwipeDismissTouchListener.DEFAULT_ANIMATION_DURATION,
+        val minAlpha: Float = SwipeConfig.DEFAULT_MIN_ALPHA,
+        val maxAlpha: Float = SwipeConfig.DEFAULT_MAX_ALPHA,
+        val alphaProgressFactor: Float = SwipeConfig.DEFAULT_ALPHA_PROGRESS_FACTOR,
+        val swipeDirection: SwipeConfig.SwipeDirection = SwipeConfig.SwipeDirection.Both
+    ) : SwipeAttribute()
+
+    object Disable : SwipeAttribute()
+}
+
+sealed class DurationAttribute : AirySnackbarAttribute {
+    object Indefinite : DurationAttribute()
+    object Short : DurationAttribute()
+    object Long : DurationAttribute()
+    data class Custom(val durationMs: Int) : DurationAttribute()
+
+    fun toDuration(): Int = when (this) {
+        is Indefinite -> BaseTransientBottomBar.LENGTH_INDEFINITE
+        is Short -> BaseTransientBottomBar.LENGTH_SHORT
+        is Long -> BaseTransientBottomBar.LENGTH_LONG
+        is Custom -> durationMs
+    }
 }
 
 enum class SizeUnit {

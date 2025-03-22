@@ -29,9 +29,12 @@ class AirySnackbar(
         get() = context.resources.getDimensionPixelSize(R.dimen.padding_small)
 
     private var airyGravity: Int = Gravity.TOP or Gravity.CENTER_HORIZONTAL
+    private var swipeConfig: SwipeConfig? = null
 
     init {
         var margins = SizeAttribute.Margin()
+        // Set default duration
+        duration = BaseTransientBottomBar.LENGTH_LONG
 
         getView().apply {
             setBackgroundColor(
@@ -59,6 +62,19 @@ class AirySnackbar(
                         is SizeAttribute.Margin -> {
                             margins = attr
                         }
+                        is SwipeAttribute.Enable -> {
+                            swipeConfig = SwipeConfig(
+                                dismissThreshold = attr.dismissThreshold,
+                                animationDuration = attr.animationDuration,
+                                minAlpha = attr.minAlpha,
+                                maxAlpha = attr.maxAlpha,
+                                alphaProgressFactor = attr.alphaProgressFactor,
+                                swipeDirection = attr.swipeDirection
+                            )
+                        }
+                        is SwipeAttribute.Disable -> {
+                            swipeConfig = null
+                        }
                     }
                 }
 
@@ -68,6 +84,21 @@ class AirySnackbar(
             }
 
             setGravity()
+            setupSwipeToDismiss()
+        }
+    }
+
+    private fun setupSwipeToDismiss() {
+        swipeConfig?.let { config ->
+            val touchListener = SwipeDismissTouchListener(
+                view = getView(),
+                config = config
+            ) {
+                dismiss()
+            }
+            getView().setOnTouchListener(touchListener)
+        } ?: run {
+            getView().setOnTouchListener(null)
         }
     }
 
@@ -222,6 +253,9 @@ class AirySnackbar(
                         is RadiusAttribute.Radius -> {
                             snackBarView.setRoundPercent(attr.radius)
                         }
+                        is DurationAttribute -> {
+                            airySnackbarModel.duration = attr.toDuration()
+                        }
                         is AirySnackbarLayoutAttribute -> {
                             airySnackbarModel.snackbarLayoutAttribute.add(attr)
 
@@ -254,7 +288,9 @@ class AirySnackbar(
                 parent,
                 snackBarView,
                 airySnackbarModel.apply { this.view = view }
-            )
+            ).apply {
+                duration = airySnackbarModel.duration
+            }
         }
     }
 }
